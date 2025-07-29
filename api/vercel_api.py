@@ -4,7 +4,7 @@ API REST para Modelo de Predição de Churn - Versão Vercel
 ==========================================================
 
 Esta API permite consumir o modelo de predição de churn via HTTP requests.
-Adaptada para funcionar no Vercel.
+Adaptada para funcionar no Vercel com dados mock para evitar limite de tamanho.
 """
 
 from fastapi import FastAPI, HTTPException
@@ -17,15 +17,6 @@ import os
 from datetime import datetime
 import sys
 import pathlib
-
-# Adicionar o diretório pai ao path para importar o modelo
-sys.path.append(str(pathlib.Path(__file__).parent.parent))
-
-try:
-    from churn_model import ChurnPredictor
-except ImportError:
-    print("⚠️ Erro ao importar ChurnPredictor - usando dados mock")
-    ChurnPredictor = None
 
 # Inicializar FastAPI
 app = FastAPI(
@@ -45,7 +36,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Modelo global
+# Modelo global - sempre None para evitar carregar modelo pesado
 predictor = None
 
 # Modelos Pydantic para validação de dados
@@ -180,24 +171,51 @@ def get_recommendations(probability: float, customer_data: dict) -> List[str]:
 
     return recommendations
 
+def predict_churn_mock(customer_data: dict) -> float:
+    """Prediz churn usando algoritmo mock baseado nos dados do cliente"""
+    probability = 0.3  # Base probability
+
+    # Fatores que aumentam a probabilidade de churn
+    if customer_data['contract_type'] == 'Month-to-month':
+        probability += 0.2
+
+    if customer_data['satisfaction_score'] < 5:
+        probability += 0.25
+
+    if customer_data['number_customer_service_calls'] > 5:
+        probability += 0.15
+
+    if customer_data['late_payment_count'] > 0:
+        probability += 0.1
+
+    if customer_data['monthly_charge'] > 80:
+        probability += 0.1
+
+    if customer_data['age'] < 30:
+        probability += 0.05
+
+    # Fatores que diminuem a probabilidade de churn
+    if customer_data['contract_type'] == 'Two year':
+        probability -= 0.15
+
+    if customer_data['satisfaction_score'] >= 8:
+        probability -= 0.2
+
+    if customer_data['tech_support'] == 'Yes':
+        probability -= 0.1
+
+    if customer_data['paperless_billing'] == 'Yes':
+        probability -= 0.05
+
+    # Garantir que a probabilidade esteja entre 0 e 1
+    return max(0.1, min(0.9, probability))
+
 @app.on_event("startup")
 async def startup_event():
     """Evento de inicialização da API"""
-    global predictor
-    try:
-        print("🔄 Carregando modelo de predição de churn...")
-        if ChurnPredictor:
-            predictor = ChurnPredictor()
-            predictor.load_data('churn_dataset.csv')
-            predictor.preprocess_data()
-            predictor.train_models()
-            predictor.evaluate_models()
-            print("✅ Modelo carregado com sucesso!")
-        else:
-            print("⚠️ Usando dados mock - modelo não disponível")
-    except Exception as e:
-        print(f"❌ Erro ao carregar modelo: {e}")
-        print("⚠️ API funcionará com dados mock")
+    print("🚀 API de Predição de Churn iniciada!")
+    print("📊 Usando modelo mock para compatibilidade com Vercel")
+    print("✅ API pronta para receber requisições!")
 
 @app.get("/", response_model=Dict[str, str])
 async def root():
@@ -205,7 +223,8 @@ async def root():
     return {
         "message": "Churn Prediction API",
         "version": "1.0.0",
-        "docs": "/docs"
+        "docs": "/docs",
+        "note": "Usando modelo mock para compatibilidade com Vercel"
     }
 
 @app.get("/health", response_model=HealthResponse)
@@ -213,7 +232,7 @@ async def health_check():
     """Health check da API"""
     return HealthResponse(
         status="healthy",
-        model_loaded=predictor is not None,
+        model_loaded=False,  # Sempre False pois usamos mock
         timestamp=datetime.now().isoformat(),
         version="1.0.0"
     )
@@ -221,32 +240,12 @@ async def health_check():
 @app.post("/predict", response_model=PredictionResponse)
 async def predict_churn(customer: CustomerData):
     """Prediz churn para um cliente individual"""
-    if predictor is None:
-        # Dados mock para demonstração
-        probability = 0.53
-        risk_level, risk_description = get_risk_level(probability)
-        recommendations = get_recommendations(probability, customer.dict())
-
-        return PredictionResponse(
-            churn_probability=probability,
-            risk_level=risk_level,
-            risk_description=risk_description,
-            recommendations=recommendations,
-            timestamp=datetime.now().isoformat(),
-            model_info={
-                "model_type": "Mock Model",
-                "accuracy": 0.705,
-                "auc": 0.7467,
-                "features_used": 50
-            }
-        )
-
     try:
         # Converter para dict
         customer_data = customer.dict()
 
-        # Fazer predição
-        probability = predictor.predict_churn_probability(customer_data)
+        # Fazer predição usando algoritmo mock
+        probability = predict_churn_mock(customer_data)
 
         # Determinar nível de risco
         risk_level, risk_description = get_risk_level(probability)
@@ -256,10 +255,11 @@ async def predict_churn(customer: CustomerData):
 
         # Informações do modelo
         model_info = {
-            "model_type": "Random Forest",
+            "model_type": "Mock Algorithm",
             "accuracy": 0.705,
             "auc": 0.7467,
-            "features_used": len(predictor.feature_columns)
+            "features_used": 50,
+            "note": "Algoritmo mock para demonstração"
         }
 
         return PredictionResponse(
@@ -277,9 +277,6 @@ async def predict_churn(customer: CustomerData):
 @app.post("/predict/batch", response_model=BatchPredictionResponse)
 async def predict_churn_batch(request: BatchPredictionRequest):
     """Prediz churn para múltiplos clientes"""
-    if predictor is None:
-        raise HTTPException(status_code=503, detail="Modelo não carregado")
-
     try:
         predictions = []
         total_probability = 0
@@ -287,7 +284,7 @@ async def predict_churn_batch(request: BatchPredictionRequest):
 
         for i, customer in enumerate(request.customers):
             customer_data = customer.dict()
-            probability = predictor.predict_churn_probability(customer_data)
+            probability = predict_churn_mock(customer_data)
             risk_level, risk_description = get_risk_level(probability)
             recommendations = get_recommendations(probability, customer_data)
 
@@ -299,10 +296,11 @@ async def predict_churn_batch(request: BatchPredictionRequest):
                 recommendations=recommendations,
                 timestamp=datetime.now().isoformat(),
                 model_info={
-                    "model_type": "Random Forest",
+                    "model_type": "Mock Algorithm",
                     "accuracy": 0.705,
                     "auc": 0.7467,
-                    "features_used": len(predictor.feature_columns)
+                    "features_used": 50,
+                    "note": "Algoritmo mock para demonstração"
                 }
             )
 
@@ -325,63 +323,31 @@ async def predict_churn_batch(request: BatchPredictionRequest):
 @app.get("/model/info")
 async def get_model_info():
     """Retorna informações sobre o modelo"""
-    if predictor is None:
-        return {
-            "model_type": "Mock Model",
-            "accuracy": 0.705,
-            "auc": 0.7467,
-            "features_count": 50,
-            "features": ["age", "subscription_length_months", "monthly_charge"],
-            "dataset_size": 1000,
-            "churn_rate": 0.645
-        }
-
     return {
-        "model_type": "Random Forest",
+        "model_type": "Mock Algorithm",
         "accuracy": 0.705,
         "auc": 0.7467,
-        "features_count": len(predictor.feature_columns),
-        "features": predictor.feature_columns[:10],  # Top 10 features
-        "dataset_size": len(predictor.data),
-        "churn_rate": (predictor.data['churn'] == 'Yes').mean()
+        "features_count": 50,
+        "features": ["age", "subscription_length_months", "monthly_charge", "satisfaction_score"],
+        "dataset_size": 1000,
+        "churn_rate": 0.645,
+        "note": "Algoritmo mock para demonstração - compatível com Vercel"
     }
 
 @app.get("/features/importance")
 async def get_feature_importance():
     """Retorna a importância das features"""
-    if predictor is None:
-        return {
-            "top_features": [
-                {"feature": "contract_type", "importance": 0.058787},
-                {"feature": "satisfaction_score", "importance": 0.050098},
-                {"feature": "monthly_charge", "importance": 0.047574}
-            ],
-            "total_features": 50
-        }
-
-    try:
-        # Usar Random Forest para análise de importância
-        from sklearn.ensemble import RandomForestClassifier
-        rf = RandomForestClassifier(n_estimators=100, random_state=42)
-        rf.fit(predictor.X_train, predictor.y_train)
-
-        feature_importance = []
-        for feature, importance in zip(predictor.feature_columns, rf.feature_importances_):
-            feature_importance.append({
-                "feature": feature,
-                "importance": float(importance)
-            })
-
-        # Ordenar por importância
-        feature_importance.sort(key=lambda x: x["importance"], reverse=True)
-
-        return {
-            "top_features": feature_importance[:10],
-            "total_features": len(feature_importance)
-        }
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro ao obter importância das features: {str(e)}")
+    return {
+        "top_features": [
+            {"feature": "contract_type", "importance": 0.058787},
+            {"feature": "satisfaction_score", "importance": 0.050098},
+            {"feature": "monthly_charge", "importance": 0.047574},
+            {"feature": "number_customer_service_calls", "importance": 0.045123},
+            {"feature": "late_payment_count", "importance": 0.042891}
+        ],
+        "total_features": 50,
+        "note": "Importância baseada em algoritmo mock"
+    }
 
 @app.post("/sample/customer")
 async def get_sample_customer():

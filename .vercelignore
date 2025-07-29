@@ -1,0 +1,71 @@
+# Arquivos de dados grandes
+*.csv
+*.pkl
+*.pickle
+*.joblib
+
+# Arquivos de modelo treinado
+*.model
+*.h5
+*.pth
+
+# Arquivos de desenvolvimento
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Arquivos de sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Arquivos de configuração local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Arquivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Arquivos de teste
+test_*.py
+*_test.py
+tests/
+
+# Documentação local
+*.md
+!README.md
+!DEPLOY_VERCEL.md
+
+# Outros arquivos pesados
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.pdf
