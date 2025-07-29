@@ -6,51 +6,40 @@ API REST para Modelo de Predição de Churn - Vercel
 Este arquivo é o entry point para o Vercel em /api/
 """
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from http.server import BaseHTTPRequestHandler
+import json
 from datetime import datetime
 
-# Inicializar FastAPI
-app = FastAPI(
-    title="Churn Prediction API",
-    description="API para predição de churn de clientes",
-    version="1.0.0"
-)
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'application/json')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
 
-# Configurar CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+        if self.path == '/api/':
+            response = {
+                "message": "Churn Prediction API",
+                "version": "1.0.0",
+                "timestamp": datetime.now().isoformat()
+            }
+        elif self.path == '/api/health':
+            response = {
+                "status": "healthy",
+                "timestamp": datetime.now().isoformat(),
+                "version": "1.0.0"
+            }
+        elif self.path == '/api/test':
+            response = {
+                "message": "API funcionando!",
+                "timestamp": datetime.now().isoformat()
+            }
+        else:
+            response = {
+                "error": "Not found",
+                "path": self.path
+            }
 
-@app.get("/")
-async def root():
-    """Endpoint raiz"""
-    return {
-        "message": "Churn Prediction API",
-        "version": "1.0.0",
-        "timestamp": datetime.now().isoformat()
-    }
-
-@app.get("/health")
-async def health_check():
-    """Health check da API"""
-    return {
-        "status": "healthy",
-        "timestamp": datetime.now().isoformat(),
-        "version": "1.0.0"
-    }
-
-@app.get("/test")
-async def test():
-    """Endpoint de teste"""
-    return {
-        "message": "API funcionando!",
-        "timestamp": datetime.now().isoformat()
-    }
-
-# Handler para o Vercel
-handler = app
+        self.wfile.write(json.dumps(response).encode())
