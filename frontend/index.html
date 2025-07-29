@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predição de Churn - Interface</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-chart-line"></i> Predição de Churn</h1>
+                <p>Interface para testar o modelo de machine learning</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Form Section -->
+            <section class="form-section">
+                <div class="form-header">
+                    <h2><i class="fas fa-user-edit"></i> Dados do Cliente</h2>
+                    <button id="loadSampleBtn" class="btn btn-secondary">
+                        <i class="fas fa-download"></i> Carregar Exemplo
+                    </button>
+                </div>
+
+                <form id="customerForm" class="customer-form">
+                    <!-- Informações Básicas -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-info-circle"></i> Informações Básicas</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="age">Idade</label>
+                                <input type="number" id="age" name="age" min="18" max="100" value="35">
+                            </div>
+                            <div class="form-field">
+                                <label for="gender">Gênero</label>
+                                <select id="gender" name="gender">
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Feminino</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assinatura -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-file-contract"></i> Assinatura</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="subscription_length_months">Tempo de Assinatura (meses)</label>
+                                <input type="number" id="subscription_length_months" name="subscription_length_months" min="1" max="60" value="12">
+                            </div>
+                            <div class="form-field">
+                                <label for="monthly_charge">Valor Mensal (R$)</label>
+                                <input type="number" id="monthly_charge" name="monthly_charge" min="0" step="0.01" value="45.20">
+                            </div>
+                            <div class="form-field">
+                                <label for="total_charges">Total Gasto (R$)</label>
+                                <input type="number" id="total_charges" name="total_charges" min="0" step="0.01" value="542.40">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="contract_type">Tipo de Contrato</label>
+                                <select id="contract_type" name="contract_type">
+                                    <option value="Month-to-month">Mensal</option>
+                                    <option value="One year">Anual</option>
+                                    <option value="Two year">Bianual</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="payment_method">Método de Pagamento</label>
+                                <select id="payment_method" name="payment_method">
+                                    <option value="Credit card">Cartão de Crédito</option>
+                                    <option value="Bank transfer">Transferência Bancária</option>
+                                    <option value="Electronic check">Cheque Eletrônico</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Serviços -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-cogs"></i> Serviços</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="paperless_billing">Fatura Digital</label>
+                                <select id="paperless_billing" name="paperless_billing">
+                                    <option value="Yes">Sim</option>
+                                    <option value="No">Não</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="tech_support">Suporte Técnico</label>
+                                <select id="tech_support" name="tech_support">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="online_security">Segurança Online</label>
+                                <select id="online_security" name="online_security">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="online_backup">Backup Online</label>
+                                <select id="online_backup" name="online_backup">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="device_protection">Proteção de Dispositivos</label>
+                                <select id="device_protection" name="device_protection">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="premium_tech_support">Suporte Premium</label>
+                                <select id="premium_tech_support" name="premium_tech_support">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Streaming -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-play-circle"></i> Streaming</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="streaming_tv">Streaming TV</label>
+                                <select id="streaming_tv" name="streaming_tv">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="streaming_movies">Streaming Filmes</label>
+                                <select id="streaming_movies" name="streaming_movies">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="streaming_music">Streaming Música</label>
+                                <select id="streaming_music" name="streaming_music">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Internet -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-wifi"></i> Internet</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="internet_service_type">Tipo de Internet</label>
+                                <select id="internet_service_type" name="internet_service_type">
+                                    <option value="DSL">DSL</option>
+                                    <option value="Fiber optic">Fibra Óptica</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="unlimited_data">Dados Ilimitados</label>
+                                <select id="unlimited_data" name="unlimited_data">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="phone_service">Serviço de Telefone</label>
+                                <select id="phone_service" name="phone_service">
+                                    <option value="Yes">Sim</option>
+                                    <option value="No">Não</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="multiple_lines">Múltiplas Linhas</label>
+                                <select id="multiple_lines" name="multiple_lines">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="internet_service">Serviço de Internet</label>
+                                <select id="internet_service" name="internet_service">
+                                    <option value="Yes">Sim</option>
+                                    <option value="No">Não</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Uso de Dados -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-database"></i> Uso de Dados</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="avg_monthly_gb_download">Média Mensal GB (atual)</label>
+                                <input type="number" id="avg_monthly_gb_download" name="avg_monthly_gb_download" min="0" step="0.1" value="12.5">
+                            </div>
+                            <div class="form-field">
+                                <label for="avg_monthly_gb_download_6_months">Média Mensal GB (6 meses)</label>
+                                <input type="number" id="avg_monthly_gb_download_6_months" name="avg_monthly_gb_download_6_months" min="0" step="0.1" value="15.2">
+                            </div>
+                            <div class="form-field">
+                                <label for="avg_monthly_gb_download_12_months">Média Mensal GB (12 meses)</label>
+                                <input type="number" id="avg_monthly_gb_download_12_months" name="avg_monthly_gb_download_12_months" min="0" step="0.1" value="13.8">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="monthly_usage_gb">Uso Mensal GB</label>
+                                <input type="number" id="monthly_usage_gb" name="monthly_usage_gb" min="0" value="200">
+                            </div>
+                            <div class="form-field">
+                                <label for="overage_fees">Taxas de Excesso (R$)</label>
+                                <input type="number" id="overage_fees" name="overage_fees" min="0" step="0.01" value="0">
+                            </div>
+                            <div class="form-field">
+                                <label for="roaming_charges">Taxas de Roaming (R$)</label>
+                                <input type="number" id="roaming_charges" name="roaming_charges" min="0" step="0.01" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Telefonia -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-phone"></i> Telefonia</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="international_plan">Plano Internacional</label>
+                                <select id="international_plan" name="international_plan">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="voice_mail_plan">Caixa Postal</label>
+                                <select id="voice_mail_plan" name="voice_mail_plan">
+                                    <option value="No">Não</option>
+                                    <option value="Yes">Sim</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <label for="number_vmail_messages">Número de Mensagens</label>
+                                <input type="number" id="number_vmail_messages" name="number_vmail_messages" min="0" value="0">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="number_calls_placed">Chamadas Realizadas</label>
+                                <input type="number" id="number_calls_placed" name="number_calls_placed" min="0" value="12">
+                            </div>
+                            <div class="form-field">
+                                <label for="number_calls_received">Chamadas Recebidas</label>
+                                <input type="number" id="number_calls_received" name="number_calls_received" min="0" value="8">
+                            </div>
+                            <div class="form-field">
+                                <label for="total_minutes_used">Total de Minutos</label>
+                                <input type="number" id="total_minutes_used" name="total_minutes_used" min="0" value="300">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="total_data_used_gb">Total de Dados Usados (GB)</label>
+                                <input type="number" id="total_data_used_gb" name="total_data_used_gb" min="0" step="0.1" value="5.2">
+                            </div>
+                            <div class="form-field">
+                                <label for="avg_call_duration_minutes">Duração Média das Chamadas (min)</label>
+                                <input type="number" id="avg_call_duration_minutes" name="avg_call_duration_minutes" min="0" step="0.1" value="4.8">
+                            </div>
+                            <div class="form-field">
+                                <label for="avg_call_duration_6_months">Duração Média 6 meses (min)</label>
+                                <input type="number" id="avg_call_duration_6_months" name="avg_call_duration_6_months" min="0" step="0.1" value="5.5">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="avg_call_duration_12_months">Duração Média 12 meses (min)</label>
+                                <input type="number" id="avg_call_duration_12_months" name="avg_call_duration_12_months" min="0" step="0.1" value="3">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagamento -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-credit-card"></i> Pagamento</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="payment_delay_days">Dias de Atraso no Pagamento</label>
+                                <input type="number" id="payment_delay_days" name="payment_delay_days" min="0" value="1">
+                            </div>
+                            <div class="form-field">
+                                <label for="late_payment_count">Número de Pagamentos Atrasados</label>
+                                <input type="number" id="late_payment_count" name="late_payment_count" min="0" value="0">
+                            </div>
+                            <div class="form-field">
+                                <label for="missed_payment_count">Número de Pagamentos Perdidos</label>
+                                <input type="number" id="missed_payment_count" name="missed_payment_count" min="0" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Histórico -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-history"></i> Histórico</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="contract_renewal_days">Dias para Renovação do Contrato</label>
+                                <input type="number" id="contract_renewal_days" name="contract_renewal_days" min="0" value="365">
+                            </div>
+                            <div class="form-field">
+                                <label for="days_since_last_upgrade">Dias desde Último Upgrade</label>
+                                <input type="number" id="days_since_last_upgrade" name="days_since_last_upgrade" min="0" value="90">
+                            </div>
+                            <div class="form-field">
+                                <label for="days_since_last_downgrade">Dias desde Último Downgrade</label>
+                                <input type="number" id="days_since_last_downgrade" name="days_since_last_downgrade" min="0" value="0">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="days_since_last_complaint">Dias desde Última Reclamação</label>
+                                <input type="number" id="days_since_last_complaint" name="days_since_last_complaint" min="0" value="30">
+                            </div>
+                            <div class="form-field">
+                                <label for="complaint_count">Número de Reclamações</label>
+                                <input type="number" id="complaint_count" name="complaint_count" min="0" value="2">
+                            </div>
+                            <div class="form-field">
+                                <label for="number_customer_service_calls">Chamadas para Suporte</label>
+                                <input type="number" id="number_customer_service_calls" name="number_customer_service_calls" min="0" value="5">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feedback -->
+                    <div class="form-group">
+                        <h3><i class="fas fa-comments"></i> Feedback</h3>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="positive_feedback_count">Feedback Positivo</label>
+                                <input type="number" id="positive_feedback_count" name="positive_feedback_count" min="0" value="1">
+                            </div>
+                            <div class="form-field">
+                                <label for="negative_feedback_count">Feedback Negativo</label>
+                                <input type="number" id="negative_feedback_count" name="negative_feedback_count" min="0" value="0">
+                            </div>
+                            <div class="form-field">
+                                <label for="social_media_mentions">Menções em Redes Sociais</label>
+                                <input type="number" id="social_media_mentions" name="social_media_mentions" min="0" value="0">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="satisfaction_score">Score de Satisfação (1-10)</label>
+                                <input type="number" id="satisfaction_score" name="satisfaction_score" min="1" max="10" value="5">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-rocket"></i> Fazer Predição
+                        </button>
+                    </div>
+                </form>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h2><i class="fas fa-chart-pie"></i> Resultado da Predição</h2>
+                    <button id="closeResultsBtn" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Fechar
+                    </button>
+                </div>
+
+                <div class="results-content">
+                    <div class="prediction-card">
+                        <div class="prediction-header">
+                            <div class="probability-circle">
+                                <span id="probabilityValue">0%</span>
+                            </div>
+                            <div class="risk-info">
+                                <h3 id="riskLevel">🟢 BAIXO RISCO</h3>
+                                <p id="riskDescription">Cliente estável</p>
+                            </div>
+                        </div>
+
+                        <div class="prediction-details">
+                            <div class="detail-item">
+                                <span class="label">Probabilidade de Churn:</span>
+                                <span class="value" id="churnProbability">0%</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Nível de Risco:</span>
+                                <span class="value" id="riskLevelDetail">🟢 BAIXO RISCO</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Descrição:</span>
+                                <span class="value" id="riskDescriptionDetail">Cliente estável</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Timestamp:</span>
+                                <span class="value" id="timestamp">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="recommendations-card">
+                        <h3><i class="fas fa-lightbulb"></i> Recomendações</h3>
+                        <ul id="recommendationsList">
+                            <!-- Recommendations will be populated here -->
+                        </ul>
+                    </div>
+
+                    <div class="model-info-card">
+                        <h3><i class="fas fa-cogs"></i> Informações do Modelo</h3>
+                        <div class="model-details">
+                            <div class="detail-item">
+                                <span class="label">Tipo:</span>
+                                <span class="value" id="modelType">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Acurácia:</span>
+                                <span class="value" id="modelAccuracy">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">AUC:</span>
+                                <span class="value" id="modelAuc">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="label">Features Utilizadas:</span>
+                                <span class="value" id="featuresUsed">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+            <div class="loading-content">
+                <div class="spinner"></div>
+                <p>Processando predição...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
