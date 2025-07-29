@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-API REST para Modelo de Predição de Churn - Versão Vercel
-==========================================================
+API REST para Modelo de Predição de Churn - Vercel
+===================================================
 
 Esta API permite consumir o modelo de predição de churn via HTTP requests.
-Adaptada para funcionar no Vercel com dados mock para evitar limite de tamanho.
+Versão otimizada para Vercel com algoritmo mock.
 """
 
 from fastapi import FastAPI, HTTPException
@@ -12,11 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import json
-import pickle
-import os
 from datetime import datetime
-import sys
-import pathlib
 
 # Inicializar FastAPI
 app = FastAPI(
@@ -30,14 +26,11 @@ app = FastAPI(
 # Configurar CORS para permitir todas as origens
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Em produção, especifique os domínios
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Modelo global - sempre None para evitar carregar modelo pesado
-predictor = None
 
 # Modelos Pydantic para validação de dados
 class CustomerData(BaseModel):
@@ -209,13 +202,6 @@ def predict_churn_mock(customer_data: dict) -> float:
 
     # Garantir que a probabilidade esteja entre 0 e 1
     return max(0.1, min(0.9, probability))
-
-@app.on_event("startup")
-async def startup_event():
-    """Evento de inicialização da API"""
-    print("🚀 API de Predição de Churn iniciada!")
-    print("📊 Usando modelo mock para compatibilidade com Vercel")
-    print("✅ API pronta para receber requisições!")
 
 @app.get("/", response_model=Dict[str, str])
 async def root():
