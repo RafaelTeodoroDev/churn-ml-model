@@ -1,4 +1,5 @@
 {
+  "name": "churn-prediction-api-2025",
   "version": 2,
   "builds": [
     {
