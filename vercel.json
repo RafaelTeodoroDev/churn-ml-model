@@ -3,7 +3,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "vercel_api.py",
+      "src": "api/index.py",
       "use": "@vercel/python"
     },
     {
@@ -14,35 +14,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/vercel_api.py"
-    },
-    {
-      "src": "/health",
-      "dest": "/vercel_api.py"
-    },
-    {
-      "src": "/docs",
-      "dest": "/vercel_api.py"
-    },
-    {
-      "src": "/model/info",
-      "dest": "/vercel_api.py"
-    },
-    {
-      "src": "/features/importance",
-      "dest": "/vercel_api.py"
-    },
-    {
-      "src": "/sample/customer",
-      "dest": "/vercel_api.py"
-    },
-    {
-      "src": "/predict",
-      "dest": "/vercel_api.py"
-    },
-    {
-      "src": "/predict/batch",
-      "dest": "/vercel_api.py"
+      "dest": "/api/index.py"
     },
     {
       "src": "/(.*)",
