@@ -3,7 +3,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "api/index.py",
+      "src": "api/test_simple.py",
       "use": "@vercel/python"
     },
     {
@@ -14,7 +14,7 @@
   "routes": [
     {
       "src": "/api/(.*)",
-      "dest": "/api/index.py"
+      "dest": "/api/test_simple.py"
     },
     {
       "src": "/(.*)",

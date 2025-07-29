@@ -394,4 +394,4 @@ async def get_sample_customer():
     return sample_customer
 
 # Para compatibilidade com Vercel
-app.debug = True 
+app.debug = True
